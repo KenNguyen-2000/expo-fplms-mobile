@@ -1,47 +1,41 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
+import { useEffect, useState } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
+import { BottomNavbar } from './src/components';
 import {
   ClassListScreen,
   GroupDetail,
   GroupListScreen,
+  HomeScreen,
   LoginScreen,
   ProfileScreen,
 } from './src/views';
-import Hello from './src/views/Hello';
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const [isSignedIn, setIsSignedIn] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  function MainScreen() {
+    return;
+  }
+
   return (
     <NavigationContainer>
+      {/* <BottomNavbar /> */}
       <Stack.Navigator>
-        <Stack.Screen name='Login' component={LoginScreen} />
         <Stack.Screen
-          name='ClassList'
-          component={ClassListScreen}
-          options={{ title: 'ClassList' }}
+          name='Login'
+          component={LoginScreen}
+          initialParams={{ setIsSignedIn: setIsSignedIn }}
         />
         <Stack.Screen
-          name='GroupList'
-          component={GroupListScreen}
-          options={{ title: 'GroupList' }}
-        />
-        <Stack.Screen
-          name='GroupDetail'
-          component={GroupDetail}
-          options={{ title: 'GroupDetail' }}
-        />
-        <Stack.Screen
-          name='Profile'
-          component={ProfileScreen}
-          options={{ title: 'Profile' }}
-        />
-        <Stack.Screen
-          name='Hello'
-          component={Hello}
-          options={{ title: 'Hello' }}
+          name='Main'
+          options={{ headerShown: false }}
+          component={BottomNavbar}
         />
       </Stack.Navigator>
     </NavigationContainer>

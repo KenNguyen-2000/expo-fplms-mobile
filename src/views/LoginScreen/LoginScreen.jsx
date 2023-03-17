@@ -1,16 +1,21 @@
 import { Button, StyleSheet, Text, View } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
+import { COLOR } from '../../utils/color';
 
 const LoginScreen = ({ navigation }) => {
   return (
-    <View>
+    <View className='w-fit'>
       <Text className='text-xl font-bold'>LoginScreen</Text>
-      <Button
-        title='Go to Class List'
-        onPress={() => navigation.navigate('Hello', { name: 'Jane' })}
-        className='border border-slate-500 px-3'
-      />
+      <View className='bg-blue-300 w-fit'>
+        <Button
+          title='Login'
+          color={'#333'}
+          onPress={() => {
+            navigation.navigate('Main', { name: 'Jane' });
+          }}
+        />
+      </View>
       <StatusBar style='auto' />
     </View>
   );
@@ -18,4 +23,8 @@ const LoginScreen = ({ navigation }) => {
 
 export default LoginScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: COLOR.blue[2],
+  },
+});
