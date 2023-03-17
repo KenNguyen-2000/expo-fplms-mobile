@@ -1,30 +1,51 @@
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import Login from './src/views/Login';
-import Signup from './src/views/Signup';
+import { Button, StyleSheet, Text, View } from 'react-native';
+import {
+  ClassListScreen,
+  GroupDetail,
+  GroupListScreen,
+  LoginScreen,
+  ProfileScreen,
+} from './src/views';
+import Hello from './src/views/Hello';
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style='auto' />
-      <Login />
-      <Signup />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name='Login' component={LoginScreen} />
+        <Stack.Screen
+          name='ClassList'
+          component={ClassListScreen}
+          options={{ title: 'ClassList' }}
+        />
+        <Stack.Screen
+          name='GroupList'
+          component={GroupListScreen}
+          options={{ title: 'GroupList' }}
+        />
+        <Stack.Screen
+          name='GroupDetail'
+          component={GroupDetail}
+          options={{ title: 'GroupDetail' }}
+        />
+        <Stack.Screen
+          name='Profile'
+          component={ProfileScreen}
+          options={{ title: 'Profile' }}
+        />
+        <Stack.Screen
+          name='Hello'
+          component={Hello}
+          options={{ title: 'Hello' }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  text: {
-    fontSize: 24,
-    fontWeight: 600,
-    textAlign: 'center',
-  },
-});
+const styles = StyleSheet.create({});
