@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 16,
     paddingHorizontal: 32,
-    borderRadius: '100%',
+    borderRadius: 8,
   },
   text: {
     fontSize: 20,

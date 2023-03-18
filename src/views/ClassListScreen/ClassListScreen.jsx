@@ -34,8 +34,6 @@ const dumpData = {
   numOfStudents: 35,
 };
 
-const inital = new Array(5).fill(dumpData);
-
 const ClassListScreen = ({ navigation }) => {
   let [fontsLoaded] = useFonts({
     Montserrat_400Regular,
@@ -47,9 +45,6 @@ const ClassListScreen = ({ navigation }) => {
   const [toggleModal, setToggleModal] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [classes, setClasses] = useState([]);
-
-  let fontSize = 24;
-  let paddingVertical = 6;
 
   const showAddClassForm = () => {
     setShowMenuActions(!showMenuActions);

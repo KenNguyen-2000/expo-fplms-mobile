@@ -6,7 +6,6 @@ const arrColor = [COLOR.blue[3], COLOR.green[3], COLOR.gray[3], COLOR.red[4]];
 
 const Peoples = (props) => {
   const { length } = props;
-  console.log(length);
 
   return (
     <View className='flex-row-reverse'>
@@ -30,7 +29,7 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 34 / 2,
-    marginLeft: -10,
+    marginLeft: -12,
     borderWidth: 1,
     borderColor: '#fff',
   },
