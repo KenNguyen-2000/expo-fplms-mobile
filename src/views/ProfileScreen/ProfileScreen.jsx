@@ -1,8 +1,9 @@
 import { Button, Image, StyleSheet, Text, View } from 'react-native';
-import React, { useLayoutEffect } from 'react';
+import React, { useLayoutEffect, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { COLOR } from '../../utils/color';
 import image from '../../images/SE160037.jpg';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const dumpData = {
   profile: {
@@ -20,6 +21,21 @@ const dumpData = {
 };
 
 const ProfileScreen = ({ navigation }) => {
+  const [userInfo, setUserInfo] = useState();
+
+  useEffect(() => {
+    const getUserInfo = async () => {
+      const jsonValue = await AsyncStorage.getItem('@userInfo');
+      if (jsonValue) {
+        const user = JSON.parse(jsonValue);
+        console.log(user);
+        setUserInfo(user);
+      }
+    };
+
+    getUserInfo();
+  }, []);
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
@@ -35,7 +51,7 @@ const ProfileScreen = ({ navigation }) => {
             style={styles.img}
           />
           <View style={styles.avatarInfo}>
-            <Text>Pham Trong Thanh</Text>
+            <Text>{userInfo ? userInfo.name : 'Pham Trong Thanh'}</Text>
             <Text>SE160037</Text>
           </View>
         </View>
@@ -44,7 +60,7 @@ const ProfileScreen = ({ navigation }) => {
         <Text>Gender: {dumpData.profile.gender}</Text>
         <Text>Phone number: {dumpData.profile.phoneNumber}</Text>
         <Text>Address: {dumpData.profile.address}</Text>
-        <Text>Email: {dumpData.profile.email}</Text>
+        <Text>Email: {userInfo ? userInfo.email : dumpData.profile.email}</Text>
         <Text style={styles.heading}>Academic</Text>
         <Text>Major: {dumpData.academic.major}</Text>
         <Text>Current term: {dumpData.academic.currentTerm}</Text>

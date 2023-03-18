@@ -4,34 +4,38 @@ import { StatusBar } from 'expo-status-bar';
 import { COLOR } from '../../utils/color';
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
-import { makeRedirectUri } from 'expo-auth-session';
+import * as AuthSession from 'expo-auth-session';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 WebBrowser.maybeCompleteAuthSession();
 
 const LoginScreen = ({ navigation }) => {
-  const [token, setToken] = useState('');
-  const [userInfo, setUserInfo] = useState(null);
-  // console.log(IOS_GOOGLE_CLIENT_ID);
-
   const [request, response, promptAsync] = Google.useAuthRequest({
+    expoClientId:
+      '241110768064-o5spvgck701jdjjnvltnjs3tv9n2242j.apps.googleusercontent.com',
     androidClientId:
       '241110768064-21b0fe5rkcpj2hl9t9o7eh6qerup8go6.apps.googleusercontent.com',
     iosClientId:
       '241110768064-p9s1248uop2nc89eqj7epbnrihsm7j7n.apps.googleusercontent.com',
-    expoClientId:
-      '241110768064-o5spvgck701jdjjnvltnjs3tv9n2242j.apps.googleusercontent.com',
+    prompt: 'select_account',
   });
 
   useEffect(() => {
     if (response?.type === 'success') {
-      const { authentication } = response;
       console.log(response);
-      setToken(response.authentication.accessToken);
-      getUserInfo();
-    }
-  }, [response, token]);
 
-  const getUserInfo = async () => {
+      const persistAuth = async () => {
+        await AsyncStorage.setItem(
+          '@accessToken',
+          JSON.stringify(response.authentication.accessToken)
+        );
+      };
+      persistAuth();
+      getUserInfo(JSON.stringify(response.authentication.accessToken));
+    }
+  }, [response]);
+
+  const getUserInfo = async (token) => {
     try {
       const response = await fetch(
         'https://www.googleapis.com/userinfo/v2/me',
@@ -41,10 +45,26 @@ const LoginScreen = ({ navigation }) => {
       );
 
       const user = await response.json();
-      setUserInfo(user);
+      await AsyncStorage.setItem('@userInfo', JSON.stringify(user));
+      loginSuccess();
     } catch (error) {
       // Add your own error handler here
     }
+  };
+
+  const loginSuccess = () => navigation.navigate('Main');
+
+  const logout = async () => {
+    console.log(token);
+    await AuthSession.revokeAsync(
+      {
+        token: token,
+      },
+      {
+        revocationEndpoint: 'https://oauth2.googleapis.com/revoke',
+      }
+    );
+    await AsyncStorage.removeItem('@accessToken');
   };
 
   return (
@@ -52,23 +72,12 @@ const LoginScreen = ({ navigation }) => {
       <Text className='text-xl font-bold'>LoginScreen</Text>
       <View className='bg-blue-300 w-fit'>
         <Button
-          title='Login'
-          color={'#333'}
+          title='Sign in with Google'
+          disabled={!request}
           onPress={() => {
-            navigation.navigate('Main', { name: 'Jane' });
+            promptAsync();
           }}
         />
-        {userInfo === null ? (
-          <Button
-            title='Sign in with Google'
-            disabled={!request}
-            onPress={() => {
-              promptAsync({ useProxy: true, showInRecents: true });
-            }}
-          />
-        ) : (
-          <Text style={styles.text}>{userInfo.name}</Text>
-        )}
       </View>
       <StatusBar style='auto' />
     </View>
