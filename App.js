@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
-import { BottomNavbar } from './src/components';
+import BottomNavbar from './src/components/BottomNavbar';
 import {
   ClassListScreen,
   GroupDetail,

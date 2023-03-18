@@ -27,9 +27,6 @@ const ClassItem = (props) => {
           <Text>Number of Students: {props.class.numOfStudents}</Text>
         </View>
       </View>
-      <View className='absolute bottom-2 right-1 px-2 '>
-        <Button title='Edit' />
-      </View>
     </View>
   );
 };

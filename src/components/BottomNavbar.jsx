@@ -17,6 +17,7 @@ function ClassStackScreen() {
   return (
     <ClassStack.Navigator>
       <ClassStack.Screen name='ClassList' component={ClassListScreen} />
+      <ClassStack.Screen name='StudentList' component={ClassListScreen} />
       <ClassStack.Screen name='AddClass' component={AddClassScreen} />
       <ClassStack.Screen name='GroupList' component={GroupListScreen} />
       <ClassStack.Screen name='GroupDetail' component={GroupDetail} />

@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 import React, { useLayoutEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { ClassItem } from '../../components';
 import {
   useFonts,
   Montserrat_400Regular,
@@ -24,6 +23,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { Overlay } from '@rneui/themed';
+import ClassItem from '../../components/ClassItem';
 
 const dumpData = {
   classCode: 'SE160026',
@@ -33,7 +33,7 @@ const dumpData = {
   numOfStudents: 35,
 };
 
-const classes = new Array(10).fill(dumpData);
+const classes = new Array(5).fill(dumpData);
 
 const ClassListScreen = ({ navigation }) => {
   let [fontsLoaded] = useFonts({
@@ -43,7 +43,8 @@ const ClassListScreen = ({ navigation }) => {
     Montserrat_700Bold,
   });
   const [showMenuActions, setShowMenuActions] = useState(false);
-  const [toggleModal, setToggleModal] = useState(true);
+  const [toggleModal, setToggleModal] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
 
   let fontSize = 24;
   let paddingVertical = 6;
@@ -81,15 +82,17 @@ const ClassListScreen = ({ navigation }) => {
           >
             <Ionicons name='search' color={'#333'} size={18} />
             <TextInput
-              placeholder={'Please type here…'}
+              placeholder='useless placeholder'
               className='flex-1 text-black'
+              onChangeText={setSearchValue}
+              value={searchValue}
             />
           </View>
         </Overlay>
         {/* <View className='absolute flex-1 inset-0 opacity-50 bg-black z-50'>
           <Text>Welcome to the React Native Playground!</Text>
         </View> */}
-        <View className='my-4 flex-col items-center px-6 py-2 bg-[#BCF0DA] relative shadow-lg'>
+        <View className='my-4 mb-2 flex-col items-center px-6 py-2 bg-[#BCF0DA] relative shadow-lg'>
           <View className='absolute top-6 left-4 z-40'>
             <Text
               style={styles.title}
@@ -123,7 +126,7 @@ const ClassListScreen = ({ navigation }) => {
           />
         </View>
 
-        <View className='flex-1'>
+        <View className='flex-1 mb-2'>
           <FlatList
             data={classes}
             className='mx-2 px-2 z-10'

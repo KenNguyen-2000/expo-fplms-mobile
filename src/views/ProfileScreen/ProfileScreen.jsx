@@ -1,22 +1,22 @@
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { Button, Image, StyleSheet, Text, View } from 'react-native';
 import React, { useLayoutEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { COLOR } from '../../utils/color';
-import image from '../../images/SE160037.jpg'
+import image from '../../images/SE160037.jpg';
 
 const dumpData = {
-  profile : {
-    dob : '04/01/2002',
-    gender : 'male',
-    phoneNumber : '0977102955',
-    address : '',
-    email : 'thanhptse160037@fpt.edu.vn'
+  profile: {
+    dob: '04/01/2002',
+    gender: 'male',
+    phoneNumber: '0977102955',
+    address: '',
+    email: 'thanhptse160037@fpt.edu.vn',
   },
-  academic : {
-    major : 'Software Engineering',
-    currentTerm : 7,
-    roleNumber : 'SE160037'
-  }
+  academic: {
+    major: 'Software Engineering',
+    currentTerm: 7,
+    roleNumber: 'SE160037',
+  },
 };
 
 const ProfileScreen = ({ navigation }) => {
@@ -30,7 +30,10 @@ const ProfileScreen = ({ navigation }) => {
     <SafeAreaView>
       <View style={styles.headerLayout}>
         <View style={styles.avatarBox}>
-          <img src={image} style={styles.img}/>
+          <Image
+            source={require('../../images/SE160037.jpg')}
+            style={styles.img}
+          />
           <View style={styles.avatarInfo}>
             <Text>Pham Trong Thanh</Text>
             <Text>SE160037</Text>
@@ -47,7 +50,6 @@ const ProfileScreen = ({ navigation }) => {
         <Text>Current term: {dumpData.academic.currentTerm}</Text>
         <Text>Role number: {dumpData.academic.roleNumber}</Text>
       </View>
-      <Button title='Back' />
     </SafeAreaView>
   );
 };
@@ -66,20 +68,19 @@ const styles = StyleSheet.create({
   avatarBox: {
     display: 'flex',
     flexDirection: 'row',
-    height: '150px',
     width: '80%',
     marginLeft: '10%',
     marginRight: '10%',
-    paddingTop: '25px',
+    paddingTop: 25,
   },
   img: {
-    width: '100px',
-    height: '100px',
+    width: 100,
+    aspectRatio: 1,
     borderRadius: '50%',
   },
   avatarInfo: {
-      width: '150px',
-      marginLeft: '25px',
-      marginTop: '20px',
-  }
+    width: 150,
+    marginLeft: 25,
+    marginTop: 20,
+  },
 });

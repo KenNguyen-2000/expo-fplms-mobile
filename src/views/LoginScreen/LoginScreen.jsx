@@ -19,11 +19,13 @@ const LoginScreen = ({ navigation }) => {
     iosClientId:
       '241110768064-p9s1248uop2nc89eqj7epbnrihsm7j7n.apps.googleusercontent.com',
     expoClientId:
-      '241110768064-jboevjbkvqeo146drfmh6m217a1nt3sj.apps.googleusercontent.com',
+      '241110768064-o5spvgck701jdjjnvltnjs3tv9n2242j.apps.googleusercontent.com',
   });
 
   useEffect(() => {
     if (response?.type === 'success') {
+      const { authentication } = response;
+      console.log(response);
       setToken(response.authentication.accessToken);
       getUserInfo();
     }
@@ -61,7 +63,7 @@ const LoginScreen = ({ navigation }) => {
             title='Sign in with Google'
             disabled={!request}
             onPress={() => {
-              promptAsync();
+              promptAsync({ useProxy: true, showInRecents: true });
             }}
           />
         ) : (
@@ -81,6 +83,6 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: 600,
   },
 });
