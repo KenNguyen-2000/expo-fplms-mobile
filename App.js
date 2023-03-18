@@ -27,11 +27,7 @@ export default function App() {
     <NavigationContainer>
       {/* <BottomNavbar /> */}
       <Stack.Navigator>
-        <Stack.Screen
-          name='Login'
-          component={LoginScreen}
-          initialParams={{ setIsSignedIn: setIsSignedIn }}
-        />
+        <Stack.Screen name='Login' component={LoginScreen} />
         <Stack.Screen
           name='Main'
           options={{ headerShown: false }}

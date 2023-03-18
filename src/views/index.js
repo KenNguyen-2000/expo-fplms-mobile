@@ -4,6 +4,7 @@ import GroupDetail from './GroupDetail/GroupDetail';
 import GroupListScreen from './GroupListScreen/GroupListScreen';
 import ClassListScreen from './ClassListScreen/ClassListScreen';
 import HomeScreen from './HomeScreen/HomeScreen';
+import AddClassScreen from './AddClassScreen/AddClassScreen';
 
 export {
   HomeScreen,
@@ -12,4 +13,5 @@ export {
   GroupDetail,
   GroupListScreen,
   ClassListScreen,
+  AddClassScreen,
 };

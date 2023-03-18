@@ -2,6 +2,7 @@
   "expo": {
     "name": "fplms-mobile",
     "slug": "fplms-mobile",
+    "scheme": "com.ngkien299.fplmsexpo",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -11,13 +12,14 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ngkien299.fplmsexpo"
     },
     "android": {
+      "package": "com.ngkien299.fplmsexpo",
+
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -25,6 +27,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "31af6737-07cc-4118-a6fc-3ae22ef02ca8"
+      }
     }
   }
 }
