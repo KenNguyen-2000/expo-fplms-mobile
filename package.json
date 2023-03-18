@@ -15,7 +15,7 @@
     "@react-navigation/native-stack": "^6.9.12",
     "@rneui/base": "^0.0.0-edge.2",
     "@rneui/themed": "^0.0.0-edge.2",
-    "expo": "^48.0.7",
+    "expo": "~47.0.12",
     "expo-application": "~5.1.1",
     "expo-auth-session": "~4.0.3",
     "expo-font": "~11.1.1",
