@@ -73,16 +73,20 @@ const ProfileScreen = ({ navigation }) => {
             <Text>SE160037</Text>
           </View>
         </View>
-        <Text style={styles.heading}>Profile</Text>
-        <Text>Date of birth: {dumpData.profile.dob}</Text>
-        <Text>Gender: {dumpData.profile.gender}</Text>
-        <Text>Phone number: {dumpData.profile.phoneNumber}</Text>
-        <Text>Address: {dumpData.profile.address}</Text>
-        <Text>Email: {userInfo ? userInfo.email : dumpData.profile.email}</Text>
-        <Text style={styles.heading}>Academic</Text>
-        <Text>Major: {dumpData.academic.major}</Text>
-        <Text>Current term: {dumpData.academic.currentTerm}</Text>
-        <Text>Role number: {dumpData.academic.roleNumber}</Text>
+        <Text style={styles.heading}><strong>Profile</strong></Text>
+        <View style={styles.styleDetailInfo}>
+          <Text><strong>Date of birth:</strong> {dumpData.profile.dob}</Text>
+          <Text><strong>Gender:</strong> {dumpData.profile.gender}</Text>
+          <Text><strong>Phone number:</strong> {dumpData.profile.phoneNumber}</Text>
+          <Text><strong>Address:</strong> {dumpData.profile.address}</Text>
+          <Text><strong>Email:</strong> {dumpData.profile.email}</Text>
+        </View>
+        <Text style={styles.heading}><strong>Academic</strong></Text>
+        <View style={styles.styleDetailInfo}>
+        <Text><strong>Major:</strong> {dumpData.academic.major}</Text>
+        <Text><strong>Current term:</strong> {dumpData.academic.currentTerm}</Text>
+        <Text><strong>Role number:</strong> {dumpData.academic.roleNumber}</Text>
+        </View>
       </View>
       <Button title='Log out' onPress={logout} />
     </SafeAreaView>
@@ -99,14 +103,24 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 'x-large',
     color: COLOR.blue[1],
+    marginLeft: '5px',
+    marginTop: '15px',
   },
   avatarBox: {
+    border: '1px solid black',
+    borderRadius: 20,
     display: 'flex',
     flexDirection: 'row',
+    height: 120,
     width: '80%',
     marginLeft: '10%',
     marginRight: '10%',
-    paddingTop: 25,
+    marginTop: 15,
+    marginBottom: 10,
+    paddingLeft: 10,
+    paddingTop: 10,
+    paddingBottom: 10,
+    boxShadow: '5px 10px 8px #888888',
   },
   img: {
     width: 100,
@@ -114,8 +128,11 @@ const styles = StyleSheet.create({
     borderRadius: '50%',
   },
   avatarInfo: {
-    width: 150,
-    marginLeft: 25,
-    marginTop: 20,
+      width: 150,
+      marginLeft: 25,
+      marginTop: 20,
   },
+  styleDetailInfo: {
+    marginLeft: 15
+  }
 });
