@@ -1,9 +1,8 @@
 import { Button, Image, StyleSheet, Text, View } from 'react-native';
-import React, { useLayoutEffect, useEffect, useState } from 'react';
+import React, { useLayoutEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { COLOR } from '../../utils/color';
 import image from '../../images/SE160037.jpg';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const dumpData = {
   profile: {
@@ -21,21 +20,6 @@ const dumpData = {
 };
 
 const ProfileScreen = ({ navigation }) => {
-  const [userInfo, setUserInfo] = useState();
-
-  useEffect(() => {
-    const getUserInfo = async () => {
-      const jsonValue = await AsyncStorage.getItem('@userInfo');
-      if (jsonValue) {
-        const user = JSON.parse(jsonValue);
-        console.log(user);
-        setUserInfo(user);
-      }
-    };
-
-    getUserInfo();
-  }, []);
-
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
@@ -51,20 +35,24 @@ const ProfileScreen = ({ navigation }) => {
             style={styles.img}
           />
           <View style={styles.avatarInfo}>
-            <Text>{userInfo ? userInfo.name : 'Pham Trong Thanh'}</Text>
+            <Text>Pham Trong Thanh</Text>
             <Text>SE160037</Text>
           </View>
         </View>
-        <Text style={styles.heading}>Profile</Text>
-        <Text>Date of birth: {dumpData.profile.dob}</Text>
-        <Text>Gender: {dumpData.profile.gender}</Text>
-        <Text>Phone number: {dumpData.profile.phoneNumber}</Text>
-        <Text>Address: {dumpData.profile.address}</Text>
-        <Text>Email: {userInfo ? userInfo.email : dumpData.profile.email}</Text>
-        <Text style={styles.heading}>Academic</Text>
-        <Text>Major: {dumpData.academic.major}</Text>
-        <Text>Current term: {dumpData.academic.currentTerm}</Text>
-        <Text>Role number: {dumpData.academic.roleNumber}</Text>
+        <Text style={styles.heading}><strong>Profile</strong></Text>
+        <View style={styles.styleDetailInfo}>
+          <Text><strong>Date of birth:</strong> {dumpData.profile.dob}</Text>
+          <Text><strong>Gender:</strong> {dumpData.profile.gender}</Text>
+          <Text><strong>Phone number:</strong> {dumpData.profile.phoneNumber}</Text>
+          <Text><strong>Address:</strong> {dumpData.profile.address}</Text>
+          <Text><strong>Email:</strong> {dumpData.profile.email}</Text>
+        </View>
+        <Text style={styles.heading}><strong>Academic</strong></Text>
+        <View style={styles.styleDetailInfo}>
+        <Text><strong>Major:</strong> {dumpData.academic.major}</Text>
+        <Text><strong>Current term:</strong> {dumpData.academic.currentTerm}</Text>
+        <Text><strong>Role number:</strong> {dumpData.academic.roleNumber}</Text>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -80,14 +68,24 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 'x-large',
     color: COLOR.blue[1],
+    marginLeft: '5px',
+    marginTop: '15px',
   },
   avatarBox: {
+    border: '1px solid black',
+    borderRadius: '20px',
     display: 'flex',
     flexDirection: 'row',
+    height: '120px',
     width: '80%',
     marginLeft: '10%',
     marginRight: '10%',
-    paddingTop: 25,
+    marginTop: '15px',
+    marginBottom: '10px',
+    paddingLeft: '10px',
+    paddingTop: '10px',
+    paddingBottom: '10px',
+    boxShadow: '5px 10px 8px #888888',
   },
   img: {
     width: 100,
@@ -95,8 +93,11 @@ const styles = StyleSheet.create({
     borderRadius: '50%',
   },
   avatarInfo: {
-    width: 150,
-    marginLeft: 25,
-    marginTop: 20,
+      width: '150px',
+      marginLeft: '25px',
+      marginTop: '20px',
   },
+  styleDetailInfo: {
+    marginLeft: '15px'
+  }
 });
