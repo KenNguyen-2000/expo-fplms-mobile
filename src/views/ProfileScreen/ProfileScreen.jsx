@@ -1,8 +1,9 @@
 import { Button, Image, StyleSheet, Text, View } from 'react-native';
-import React, { useLayoutEffect } from 'react';
+import React, { useLayoutEffect, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { COLOR } from '../../utils/color';
 import image from '../../images/SE160037.jpg';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const dumpData = {
   profile: {
@@ -20,6 +21,21 @@ const dumpData = {
 };
 
 const ProfileScreen = ({ navigation }) => {
+  const [userInfo, setUserInfo] = useState();
+
+  useEffect(() => {
+    const getUserInfo = async () => {
+      const jsonValue = await AsyncStorage.getItem('@userInfo');
+      if (jsonValue) {
+        const user = JSON.parse(jsonValue);
+        console.log(user);
+        setUserInfo(user);
+      }
+    };
+
+    getUserInfo();
+  }, []);
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
@@ -35,7 +51,7 @@ const ProfileScreen = ({ navigation }) => {
             style={styles.img}
           />
           <View style={styles.avatarInfo}>
-            <Text>Pham Trong Thanh</Text>
+            <Text>{userInfo ? userInfo.name : 'Pham Trong Thanh'}</Text>
             <Text>SE160037</Text>
           </View>
         </View>
@@ -73,18 +89,18 @@ const styles = StyleSheet.create({
   },
   avatarBox: {
     border: '1px solid black',
-    borderRadius: '20px',
+    borderRadius: 20,
     display: 'flex',
     flexDirection: 'row',
-    height: '120px',
+    height: 120,
     width: '80%',
     marginLeft: '10%',
     marginRight: '10%',
-    marginTop: '15px',
-    marginBottom: '10px',
-    paddingLeft: '10px',
-    paddingTop: '10px',
-    paddingBottom: '10px',
+    marginTop: 15,
+    marginBottom: 10,
+    paddingLeft: 10,
+    paddingTop: 10,
+    paddingBottom: 10,
     boxShadow: '5px 10px 8px #888888',
   },
   img: {
@@ -93,11 +109,11 @@ const styles = StyleSheet.create({
     borderRadius: '50%',
   },
   avatarInfo: {
-      width: '150px',
-      marginLeft: '25px',
-      marginTop: '20px',
+      width: 150,
+      marginLeft: 25,
+      marginTop: 20,
   },
   styleDetailInfo: {
-    marginLeft: '15px'
+    marginLeft: 15
   }
 });
