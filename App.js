@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
@@ -16,18 +17,32 @@ import {
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [isSignedIn, setIsSignedIn] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(undefined);
 
-  function MainScreen() {
-    return;
-  }
+  useEffect(() => {
+    const getAccessToken = async () => {
+      const token = await AsyncStorage.getItem('@accessToken');
+      if (token) {
+        setIsSignedIn(token);
+      } else {
+        setIsSignedIn(undefined);
+      }
+    };
+
+    getAccessToken();
+  }, []);
 
   return (
     <NavigationContainer>
       {/* <BottomNavbar /> */}
       <Stack.Navigator>
-        <Stack.Screen name='Login' component={LoginScreen} />
+        <Stack.Screen
+          name='Login'
+          component={LoginScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
         <Stack.Screen
           name='Main'
           options={{ headerShown: false }}

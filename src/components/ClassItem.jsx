@@ -5,6 +5,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const ClassItem = (props) => {
+  const classItem = props.class;
   return (
     <View
       style={styles.wrapper}
@@ -12,19 +13,19 @@ const ClassItem = (props) => {
     >
       <View>
         <Text className='text-xl font-semibold text-primary_text mb-1'>
-          {props.class.classCode}
+          {classItem.name}
         </Text>
         <View className='flex-row gap-2 items-center'>
           <Oticons name='project' size={18} />
-          <Text className='mb-1 text-base'>{props.class.courseName}</Text>
+          <Text className='mb-1 text-base'>{classItem.semesterCode}</Text>
         </View>
         <View className='flex-row gap-2 items-center'>
           <Feather name='mail' size={18} />
-          <Text className='mb-1'>{props.class.lecturer}</Text>
+          <Text className='mb-1'>{classItem.subjectId}</Text>
         </View>
         <View className='flex-row items-center gap-2'>
           <Ionicons name='ios-people-outline' size={18} />
-          <Text>Number of Students: {props.class.numOfStudents}</Text>
+          <Text>Number of Students: {classItem.enrollKey}</Text>
         </View>
       </View>
     </View>

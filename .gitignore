@@ -14,7 +14,7 @@ web-build/
 yarn.lock
 yarn-error.log
 package-lock.json
-
+/config.js
 # macOS
 .DS_Store
 

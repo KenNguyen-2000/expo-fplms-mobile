@@ -1,39 +1,61 @@
-import { Button, StyleSheet, Text, View } from 'react-native';
+import {
+  Button,
+  StyleSheet,
+  Image,
+  View,
+  SafeAreaView,
+  Pressable,
+  Text,
+} from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { COLOR } from '../../utils/color';
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
-import * as AuthSession from 'expo-auth-session';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { LinearGradient } from 'expo-linear-gradient';
+import jwtDecode from 'jwt-decode';
+import Config from '../../../config';
 
 WebBrowser.maybeCompleteAuthSession();
 
 const LoginScreen = ({ navigation }) => {
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    expoClientId:
-      '241110768064-o5spvgck701jdjjnvltnjs3tv9n2242j.apps.googleusercontent.com',
-    androidClientId:
-      '241110768064-21b0fe5rkcpj2hl9t9o7eh6qerup8go6.apps.googleusercontent.com',
-    iosClientId:
-      '241110768064-p9s1248uop2nc89eqj7epbnrihsm7j7n.apps.googleusercontent.com',
+  const [token, setToken] = useState('');
+  const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
+    expoClientId: Config.EXPO_GOOGLE_CLIENT_ID,
+    androidClientId: Config.ANDROID_GOOGLE_CLIENT_ID,
+    iosClientId: Config.iosClientId,
     prompt: 'select_account',
+    scopes: ['openid', 'profile', 'email'],
   });
 
   useEffect(() => {
     if (response?.type === 'success') {
-      console.log(response);
-
       const persistAuth = async () => {
         await AsyncStorage.setItem(
           '@accessToken',
-          JSON.stringify(response.authentication.accessToken)
+          JSON.stringify(response.params.id_token)
         );
       };
+
+      const setUserInfo = async (userInfo) => {
+        await AsyncStorage.setItem('@userInfo', JSON.stringify(userInfo));
+      };
+      // console.log(response);
+
       persistAuth();
-      getUserInfo(JSON.stringify(response.authentication.accessToken));
+      const decoded = jwtDecode(response.params.id_token);
+
+      setUserInfo(decoded);
+      setToken(response.params.id_token);
     }
   }, [response]);
+
+  useEffect(() => {
+    if (token !== '') {
+      loginSuccess();
+    }
+  }, [token]);
 
   const getUserInfo = async (token) => {
     try {
@@ -54,33 +76,59 @@ const LoginScreen = ({ navigation }) => {
 
   const loginSuccess = () => navigation.navigate('Main');
 
-  const logout = async () => {
-    console.log(token);
-    await AuthSession.revokeAsync(
-      {
-        token: token,
-      },
-      {
-        revocationEndpoint: 'https://oauth2.googleapis.com/revoke',
-      }
-    );
-    await AsyncStorage.removeItem('@accessToken');
-  };
-
   return (
-    <View className='w-fit'>
-      <Text className='text-xl font-bold'>LoginScreen</Text>
-      <View className='bg-blue-300 w-fit'>
-        <Button
-          title='Sign in with Google'
-          disabled={!request}
+    <SafeAreaView style={styles.container}>
+      <LinearGradient
+        colors={[COLOR.blue[2], COLOR.blue[3], COLOR.blue[5]]}
+        className='absolute inset-0 flex-1'
+      />
+      <View className='relative items-center mt-10'>
+        <View className='rounded-full relative'>
+          <Image
+            style={styles.hero1}
+            source={require('../../../assets/hero1.png')}
+          />
+          {/* <View style={styles.bgHero1} /> */}
+          <LinearGradient
+            colors={['rgba(255, 153, 0, 1)', 'rgb(246, 157, 24)', '#fff']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={styles.bgHero1}
+            locations={[0, 0.5, 0.95]}
+          />
+        </View>
+
+        <Image
+          style={styles.hero2}
+          source={require('../../../assets/hero2.png')}
+        />
+        <Image
+          style={styles.hero3}
+          source={require('../../../assets/hero3.png')}
+        />
+      </View>
+
+      <View className='items-center mt-20'>
+        <Pressable
+          className='shadow-lg'
+          style={styles.googleBtn}
           onPress={() => {
             promptAsync();
           }}
-        />
+        >
+          <Text
+            style={{
+              color: '#fff',
+              fontSize: 18,
+              fontWeight: '500',
+            }}
+          >
+            Sign in FPT education email
+          </Text>
+        </Pressable>
       </View>
       <StatusBar style='auto' />
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -90,8 +138,56 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: COLOR.blue[2],
   },
+  googleBtn: {
+    color: '#fff',
+    backgroundColor: COLOR.blue[1],
+    alignItems: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    borderRadius: '100%',
+  },
   text: {
     fontSize: 20,
     fontWeight: 600,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: COLOR.blue[5],
+  },
+  hero1: {
+    height: 300,
+    aspectRatio: 1,
+    resizeMode: 'contain',
+    zIndex: 5,
+  },
+  hero2: {
+    height: 140,
+    width: 140,
+    resizeMode: 'contain',
+    position: 'absolute',
+    bottom: '-10%',
+    right: 4,
+  },
+  hero3: {
+    height: 160,
+    width: 160,
+    resizeMode: 'contain',
+    position: 'absolute',
+    left: 10,
+    bottom: '-5%',
+  },
+  bgHero1: {
+    height: 250,
+    width: 250,
+    backgroundColor: '#333',
+    borderRadius: 300 / 2,
+    position: 'absolute',
+    bottom: 0,
+    left: 25,
+    transform: [
+      {
+        rotate: '80deg',
+      },
+    ],
   },
 });

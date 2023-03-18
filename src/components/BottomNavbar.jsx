@@ -41,7 +41,7 @@ const BottomNavbar = ({ navigation }) => {
             <Text
               style={{
                 fontSize: 20,
-                fontWeight: 500,
+                fontWeight: '500',
               }}
             >
               Class
@@ -67,7 +67,7 @@ const BottomNavbar = ({ navigation }) => {
             <Text
               style={{
                 fontSize: 20,
-                fontWeight: 500,
+                fontWeight: '500',
               }}
             >
               Profile

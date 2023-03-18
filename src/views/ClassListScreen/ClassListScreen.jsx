@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {
   useFonts,
@@ -24,6 +24,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { Overlay } from '@rneui/themed';
 import ClassItem from '../../components/ClassItem';
+import { ClassService } from '../../api/classService';
 
 const dumpData = {
   classCode: 'SE160026',
@@ -33,7 +34,7 @@ const dumpData = {
   numOfStudents: 35,
 };
 
-const classes = new Array(5).fill(dumpData);
+const inital = new Array(5).fill(dumpData);
 
 const ClassListScreen = ({ navigation }) => {
   let [fontsLoaded] = useFonts({
@@ -45,6 +46,7 @@ const ClassListScreen = ({ navigation }) => {
   const [showMenuActions, setShowMenuActions] = useState(false);
   const [toggleModal, setToggleModal] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+  const [classes, setClasses] = useState([]);
 
   let fontSize = 24;
   let paddingVertical = 6;
@@ -59,12 +61,27 @@ const ClassListScreen = ({ navigation }) => {
     });
   }, []);
 
-  const SearchInput = () => {
-    return (
-      <View className='absolute inset-0 z-50 backdrop-brightness-90'>
-        <TextInput placeholder='SE1600,...' />
-      </View>
-    );
+  useEffect(() => {
+    const fetchClassList = async () => {
+      try {
+        console.log('Fetching');
+        const res = await ClassService.getClassList();
+        if (res.status === 200) {
+          console.log(res.data);
+          setClasses(res.data.data);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchClassList();
+  }, []);
+
+  const handleShowGroups = (id) => {
+    navigation.navigate('GroupList', {
+      classId: id,
+    });
   };
 
   if (!fontsLoaded) {
@@ -127,20 +144,22 @@ const ClassListScreen = ({ navigation }) => {
         </View>
 
         <View className='flex-1 mb-2'>
-          <FlatList
-            data={classes}
-            className='mx-2 px-2 z-10'
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                onPress={() => navigation.navigate('GroupList')}
-              >
-                <ClassItem class={item} />
-              </TouchableOpacity>
-            )}
-            showsVerticalScrollIndicator={false}
-            ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
-            keyExtractor={(item, index) => index}
-          />
+          {classes.length > 0 && (
+            <FlatList
+              data={classes}
+              className='mx-2 px-2 z-10'
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  onPress={handleShowGroups.bind(null, item.id)}
+                >
+                  <ClassItem class={item} />
+                </TouchableOpacity>
+              )}
+              showsVerticalScrollIndicator={false}
+              ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
+              keyExtractor={(item) => item.id}
+            />
+          )}
         </View>
 
         <TouchableHighlight

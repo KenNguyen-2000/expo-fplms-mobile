@@ -4,6 +4,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { COLOR } from '../../utils/color';
 import image from '../../images/SE160037.jpg';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as AuthSession from 'expo-auth-session';
+
+// {"aud": "241110768064-o5spvgck701jdjjnvltnjs3tv9n2242j.apps.googleusercontent.com", "azp": "241110768064-o5spvgck701jdjjnvltnjs3tv9n2242j.apps.googleusercontent.com", "email": "kienntse160026@fpt.edu.vn", "email_verified": true, "exp": 1679166592, "given_name": "Nguyen Thanh Kien - K16_HCM", "hd": "fpt.edu.vn", "iat": 1679162992, "iss": "https://accounts.google.com", "jti": "f0e4f86c9c9a77f5976c6e799051ca66da604402", "locale": "en-GB", "name": "Nguyen Thanh Kien - K16_HCM", "nonce": "06d8c17f1d339a2acf27a7b68087032bd3631eda088698fa4c5cf02ce56583e9", "picture": "https://lh3.googleusercontent.com/a/AGNmyxbS2f-PoYfvmR_uwzpeEI4RfXrJfkDBMkGbyETE=s96-c", "sub": "117527463137728320241"}
 
 const dumpData = {
   profile: {
@@ -22,6 +25,21 @@ const dumpData = {
 
 const ProfileScreen = ({ navigation }) => {
   const [userInfo, setUserInfo] = useState();
+
+  const logout = async () => {
+    const jsonValue = await await AsyncStorage.getItem('@accessToken');
+    console.log(jsonValue);
+    await AuthSession.revokeAsync(
+      {
+        token: jsonValue,
+      },
+      {
+        revocationEndpoint: 'https://oauth2.googleapis.com/revoke',
+      }
+    );
+    await AsyncStorage.removeItem('@accessToken');
+    navigation.navigate('Login');
+  };
 
   useEffect(() => {
     const getUserInfo = async () => {
@@ -66,6 +84,7 @@ const ProfileScreen = ({ navigation }) => {
         <Text>Current term: {dumpData.academic.currentTerm}</Text>
         <Text>Role number: {dumpData.academic.roleNumber}</Text>
       </View>
+      <Button title='Log out' onPress={logout} />
     </SafeAreaView>
   );
 };
