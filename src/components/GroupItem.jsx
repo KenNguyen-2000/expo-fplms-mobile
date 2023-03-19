@@ -9,7 +9,6 @@ import { ListItem } from '@rneui/base-edge';
 
 const GroupItem = (props) => {
   const { group } = props;
-  console.log(group);
 
   return (
     <View

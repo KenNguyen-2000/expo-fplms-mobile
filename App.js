@@ -6,6 +6,8 @@ import { useEffect, useState } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import BottomNavbar from './src/components/BottomNavbar';
 import {
+  AddClassScreen,
+  AddGroupScreen,
   ClassListScreen,
   GroupDetail,
   GroupListScreen,
@@ -48,6 +50,8 @@ export default function App() {
           options={{ headerShown: false }}
           component={BottomNavbar}
         />
+        <Stack.Screen name='AddClass' component={AddClassScreen} />
+        <Stack.Screen name='AddGroup' component={AddGroupScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

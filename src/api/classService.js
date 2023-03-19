@@ -14,4 +14,30 @@ export class ClassService {
     });
     return res;
   }
+
+  static async createNewClass({
+    className,
+    semesterCode,
+    subjectId,
+    enrollKey,
+    cycleDuration,
+  }) {
+    const accessToken = await getToken();
+    const res = await axios.post(
+      Config.API_URL + '/management/classes',
+      {
+        name: className,
+        semesterCode,
+        subjectId,
+        enrollKey,
+        cycleDuration,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return res;
+  }
 }

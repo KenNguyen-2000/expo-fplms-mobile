@@ -45,6 +45,7 @@ const ClassListScreen = ({ navigation }) => {
   const [toggleModal, setToggleModal] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [classes, setClasses] = useState([]);
+  const [refresh, setRefresh] = useState(false);
 
   const showAddClassForm = () => {
     setShowMenuActions(!showMenuActions);
@@ -56,13 +57,26 @@ const ClassListScreen = ({ navigation }) => {
     });
   }, []);
 
+  const handleRefreshList = async () => {
+    setRefresh(true);
+    try {
+      const res = await ClassService.getClassList();
+      if (res.status === 200) {
+        setTimeout(() => {
+          setClasses(res.data.data);
+          setRefresh(false);
+        }, 2000);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     const fetchClassList = async () => {
       try {
-        console.log('Fetching');
         const res = await ClassService.getClassList();
         if (res.status === 200) {
-          console.log(res.data);
           setClasses(res.data.data);
         }
       } catch (error) {
@@ -141,6 +155,8 @@ const ClassListScreen = ({ navigation }) => {
         <View className='flex-1 mb-2'>
           {classes.length > 0 && (
             <FlatList
+              refreshing={refresh}
+              onRefresh={handleRefreshList}
               data={classes}
               className='mx-2 px-2 z-10'
               renderItem={({ item }) => (

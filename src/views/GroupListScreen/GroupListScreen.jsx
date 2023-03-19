@@ -36,6 +36,7 @@ const GroupListScreen = ({ navigation, route }) => {
   const handleShowGroupDetail = (groudId) => {
     navigation.navigate('GroupDetail', {
       groupId: groudId,
+      classId: route.params.classId,
     });
   };
 
