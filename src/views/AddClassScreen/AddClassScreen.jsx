@@ -18,16 +18,6 @@ import SubjectService from '../../api/subjectService';
 import { Button } from 'react-native-paper';
 import { ClassService } from '../../api/classService';
 
-const data = [
-  { key: '1', value: 'Mobiles', disabled: true },
-  { key: '2', value: 'Appliances' },
-  { key: '3', value: 'Cameras' },
-  { key: '4', value: 'Computers', disabled: true },
-  { key: '5', value: 'Vegetables' },
-  { key: '6', value: 'Diary Products' },
-  { key: '7', value: 'Drinks' },
-];
-
 const AddClassScreen = ({ navigation }) => {
   const [selected, setSelected] = React.useState('');
   const [semesters, setSemesters] = React.useState([]);

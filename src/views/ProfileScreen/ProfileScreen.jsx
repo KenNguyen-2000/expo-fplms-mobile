@@ -17,6 +17,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
+import { Surface } from 'react-native-paper';
 
 // {"aud": "241110768064-o5spvgck701jdjjnvltnjs3tv9n2242j.apps.googleusercontent.com", "azp": "241110768064-o5spvgck701jdjjnvltnjs3tv9n2242j.apps.googleusercontent.com", "email": "kienntse160026@fpt.edu.vn", "email_verified": true, "exp": 1679166592, "given_name": "Nguyen Thanh Kien - K16_HCM", "hd": "fpt.edu.vn", "iat": 1679162992, "iss": "https://accounts.google.com", "jti": "f0e4f86c9c9a77f5976c6e799051ca66da604402", "locale": "en-GB", "name": "Nguyen Thanh Kien - K16_HCM", "nonce": "06d8c17f1d339a2acf27a7b68087032bd3631eda088698fa4c5cf02ce56583e9", "picture": "https://lh3.googleusercontent.com/a/AGNmyxbS2f-PoYfvmR_uwzpeEI4RfXrJfkDBMkGbyETE=s96-c", "sub": "117527463137728320241"}
 
@@ -40,6 +41,7 @@ const ProfileScreen = ({ navigation }) => {
 
   const logout = async () => {
     const token = await AsyncStorage.getItem('@accessToken');
+    console.log(token);
     await AuthSession.revokeAsync(
       {
         token: token,
@@ -55,6 +57,7 @@ const ProfileScreen = ({ navigation }) => {
   useEffect(() => {
     const getUserInfo = async () => {
       const jsonValue = await AsyncStorage.getItem('@userInfo');
+
       if (jsonValue) {
         const user = JSON.parse(jsonValue);
         console.log(user);
@@ -77,7 +80,7 @@ const ProfileScreen = ({ navigation }) => {
       <View style={styles.circle3}></View>
       <View style={styles.circle1}></View>
       <View className='px-5 mt-20 '>
-        <View style={styles.wrapper} className='shadow-md'>
+        <Surface elevation={3} style={styles.wrapper} className='shadow-md'>
           <View className='flex-col gap-1 items-center -mt-16 mb-7'>
             {userInfo ? (
               <Image source={{ uri: userInfo.picture }} style={styles.img} />
@@ -163,7 +166,7 @@ const ProfileScreen = ({ navigation }) => {
             <Text className='text-lg font-bold text-white mr-2'>Log out</Text>
             <Ionicons name='md-exit-outline' color={'#fff'} size={20} />
           </Pressable>
-        </View>
+        </Surface>
       </View>
     </SafeAreaView>
   );
@@ -239,9 +242,9 @@ const styles = StyleSheet.create({
     boxShadow: '5px 10px 8px #888888',
   },
   img: {
-    height: 160,
+    height: 140,
     aspectRatio: 1,
-    borderRadius: 160 / 2,
+    borderRadius: 140 / 2,
     borderWidth: 2,
     borderColor: '#d1d1d1',
     marginBottom: 6,

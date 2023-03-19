@@ -40,4 +40,17 @@ export class ClassService {
     );
     return res;
   }
+
+  static async deleteClass(classId) {
+    const accessToken = await getToken();
+    const res = await axios.delete(
+      Config.API_URL + `/management/classes/${classId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return res;
+  }
 }

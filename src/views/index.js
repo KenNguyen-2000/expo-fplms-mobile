@@ -1,6 +1,6 @@
 import LoginScreen from './LoginScreen/LoginScreen';
 import ProfileScreen from './ProfileScreen/ProfileScreen';
-import GroupDetail from './GroupDetail/GroupDetail';
+import DailyReports from './DailyReports/DailyReports';
 import GroupListScreen from './GroupListScreen/GroupListScreen';
 import ClassListScreen from './ClassListScreen/ClassListScreen';
 import HomeScreen from './HomeScreen/HomeScreen';
@@ -12,7 +12,7 @@ export {
   HomeScreen,
   LoginScreen,
   ProfileScreen,
-  GroupDetail,
+  DailyReports,
   GroupListScreen,
   ClassListScreen,
   AddClassScreen,

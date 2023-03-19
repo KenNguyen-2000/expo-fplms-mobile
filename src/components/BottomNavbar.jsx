@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import ClassListScreen from '../views/ClassListScreen/ClassListScreen';
 import {
   AddClassScreen,
-  GroupDetail,
+  DailyReports,
   GroupListScreen,
   HomeScreen,
   ProfileScreen,
@@ -15,6 +15,7 @@ import TabBarItem from './TabBarItem';
 import { COLOR } from '../utils/color';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import StudentListScreen from '../views/StudentListScreen/StudentListScreen';
 
 const Tab = createBottomTabNavigator();
 const ClassStack = createNativeStackNavigator();
@@ -23,9 +24,9 @@ function ClassStackScreen() {
   return (
     <ClassStack.Navigator>
       <ClassStack.Screen name='ClassList' component={ClassListScreen} />
-      <ClassStack.Screen name='StudentList' component={ClassListScreen} />
+      <ClassStack.Screen name='StudentList' component={StudentListScreen} />
       <ClassStack.Screen name='GroupList' component={GroupListScreen} />
-      <ClassStack.Screen name='GroupDetail' component={GroupDetail} />
+      <ClassStack.Screen name='DailyReports' component={DailyReports} />
       <ClassStack.Screen name='ReportDetail' component={ReportDetail} />
     </ClassStack.Navigator>
   );
@@ -93,13 +94,13 @@ const styles = StyleSheet.create({
   homeButton: {
     alignItems: 'center',
     justifyContent: 'center',
-    height: 75,
-    width: 75,
+    height: 65,
+    width: 65,
     backgroundColor: COLOR.blue[2],
-    borderRadius: 75,
+    borderRadius: 65,
     borderWidth: 3,
     borderColor: '#fff',
-    bottom: 40,
+    bottom: 34,
   },
   icon: {
     color: COLOR.blue[5],

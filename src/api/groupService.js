@@ -17,4 +17,41 @@ export class GroupService {
     );
     return res;
   }
+
+  static async createGroup({
+    groupQuantity,
+    memberQuantity,
+    enrollTime,
+    classId,
+  }) {
+    const accessToken = await getToken();
+    const res = await axios.post(
+      Config.API_URL + `/management/classes/${classId}/groups`,
+      {
+        classId: classId,
+        enrollTime: enrollTime,
+        groupQuantity: groupQuantity,
+        memberQuantity: memberQuantity,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return res;
+  }
+
+  static async deleteGroup(classId, groupId) {
+    const accessToken = await getToken();
+    const res = await axios.delete(
+      Config.API_URL + `/management/classes/${classId}/groups/${groupId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    return res;
+  }
 }

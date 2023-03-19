@@ -9,6 +9,7 @@ import { ListItem } from '@rneui/base-edge';
 
 const GroupItem = (props) => {
   const { group } = props;
+  console.log(group);
 
   return (
     <View
@@ -21,7 +22,9 @@ const GroupItem = (props) => {
         </Text>
         <View className='flex-row gap-2 items-center mb-2'>
           <Text className='text-lg text-gray_0 uppercase'>
-            Project Base LMS
+            {group.projectDTO !== null && group.projectDTO.name !== null
+              ? group.projectDTO.name
+              : 'Unassigned'}
           </Text>
         </View>
         <View className='flex-row  gap-2 items-center'>

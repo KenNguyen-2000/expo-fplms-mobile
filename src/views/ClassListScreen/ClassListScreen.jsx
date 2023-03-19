@@ -194,6 +194,7 @@ const ClassListScreen = ({ navigation }) => {
         >
           <Ionicons name='search' color={'#fff'} size={30} />
         </TouchableOpacity>
+
         <TouchableOpacity
           style={{
             transform: [

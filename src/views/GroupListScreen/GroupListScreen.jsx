@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   FlatList,
   Image,
@@ -14,12 +15,14 @@ import {
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { GroupService } from '../../api/groupService';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { Overlay } from '@rneui/themed';
-import ClassItem from '../../components/ClassItem';
 import GroupItem from '../../components/GroupItem';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { COLOR } from '../../utils/color';
+import { ClassService } from '../../api/classService';
 
 const GroupListScreen = ({ navigation, route }) => {
   const [groups, setGroups] = useState([]);
@@ -27,28 +30,73 @@ const GroupListScreen = ({ navigation, route }) => {
   const [showMenuActions, setShowMenuActions] = useState(false);
   const [toggleModal, setToggleModal] = useState(false);
   const [searchValue, setSearchValue] = useState('');
-  const [classes, setClasses] = useState([]);
+  const [refresh, setRefresh] = useState(false);
 
   const showAddClassForm = () => {
     setShowMenuActions(!showMenuActions);
   };
 
   const handleShowGroupDetail = (groudId) => {
-    navigation.navigate('GroupDetail', {
+    navigation.navigate('DailyReports', {
       groupId: groudId,
       classId: route.params.classId,
     });
   };
 
+  const showAlertModal = () => {
+    Alert.alert('Delete class', 'This action cannot revers', [
+      {
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      { text: 'Confirm', onPress: () => handleDeleteClass() },
+    ]);
+  };
+
+  const handleDeleteClass = async () => {
+    try {
+      const res = await ClassService.deleteClass(route.params.classId);
+      if (res.status === 200) {
+        if (res.data.code === 200) {
+          navigation.goBack();
+        } else {
+          throw new Error(res.data);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleRefreshList = async () => {
+    setRefresh(true);
+    try {
+      const res = await GroupService.getGroupList(route.params.classId);
+      if (res.status === 200) {
+        setTimeout(() => {
+          setGroups(res.data.data);
+          setRefresh(false);
+        }, 2000);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: '',
-      headerBackTitle: 'Group list',
-      headerTintColor: '#000',
-      headerBackTitleStyle: {
-        fontWeight: 'bold',
-      },
-      headerBlurEffect: 'dark',
+      headerBackTitle: 'Back',
+      headerBackTitleVisible: false,
+      headerRight: () => (
+        <TouchableOpacity onPress={showAlertModal}>
+          <MaterialCommunityIcons
+            name='delete-empty'
+            color={COLOR.red[2]}
+            size={28}
+          />
+        </TouchableOpacity>
+      ),
     });
   }, []);
 
@@ -86,9 +134,11 @@ const GroupListScreen = ({ navigation, route }) => {
         </View>
       </Overlay>
 
-      <View className='flex-1 mt-3'>
+      <View className='flex-1 mt-3 bg-white'>
         {groups.length > 0 && (
           <FlatList
+            refreshing={refresh}
+            onRefresh={handleRefreshList}
             data={groups.sort((a, b) => a.number > b.number)}
             className='mx-2 px-2 z-10'
             renderItem={({ item }) => (
@@ -130,11 +180,35 @@ const GroupListScreen = ({ navigation, route }) => {
         style={{
           transform: [
             {
+              translateY: showMenuActions ? -58 : 0,
+            },
+            {
               translateX: showMenuActions ? -58 : 0,
             },
           ],
         }}
-        onPress={() => navigation.navigate('AddClass')}
+        onPress={() =>
+          navigation.navigate('StudentList', {
+            classId: route.params.classId,
+          })
+        }
+        className={`absolute bottom-3 right-2 z-30 bg-blue_1 rounded-full p-2`}
+      >
+        <Ionicons name='ios-people-sharp' color={'#fff'} size={30} />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{
+          transform: [
+            {
+              translateX: showMenuActions ? -58 : 0,
+            },
+          ],
+        }}
+        onPress={() =>
+          navigation.navigate('AddGroup', {
+            classId: route.params.classId,
+          })
+        }
         className={`absolute bottom-3 right-2  z-30`}
       >
         <AntDesign name='pluscircle' color={'#7799FA'} size={48} />
