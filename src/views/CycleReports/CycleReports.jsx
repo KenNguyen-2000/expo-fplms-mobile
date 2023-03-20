@@ -1,124 +1,50 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
 import {
+  Alert,
+  Button,
+  FlatList,
+  Image,
+  Pressable,
+  SafeAreaView,
   StyleSheet,
   Text,
-  View,
-  TouchableOpacity,
-  StatusBar,
+  TextInput,
   TouchableHighlight,
-  Alert,
-  Pressable,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { Agenda } from 'react-native-calendars';
-import { Card, ToggleButton } from 'react-native-paper';
-import ReportService from '../../api/reportService';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import StudentService from '../../api/studentService';
-import { COLOR } from '../../utils/color';
-import Entypo from 'react-native-vector-icons/Entypo';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
+import { StatusBar } from 'expo-status-bar';
 import { GroupService } from '../../api/groupService';
-
-const timeToString = (time) => {
-  const date = new Date(time);
-  return date.toISOString().split('T')[0];
-};
+import Entypo from 'react-native-vector-icons/Entypo';
+import { Overlay } from '@rneui/themed';
+import GroupItem from '../../components/GroupItem';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { COLOR } from '../../utils/color';
+import { ClassService } from '../../api/classService';
+import ReportService from '../../api/reportService';
+import CycleItem from '../../components/CycleItem';
 
 const CycleReports = ({ navigation, route }) => {
   const { classId, groupId } = route.params;
 
-  const [value, setValue] = useState(false);
-  const [items, setItems] = useState({});
-  const [reports, setReports] = useState();
-  const today = new Date();
+  const [reports, setCycleReports] = useState([]);
 
-  const loadItems = (day) => {
-    setTimeout(() => {
-      for (let i = -15; i < 85; i++) {
-        const time = day.timestamp + i * 24 * 60 * 60 * 1000;
+  const [showMenuActions, setShowMenuActions] = useState(false);
+  const [toggleModal, setToggleModal] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
+  const [refresh, setRefresh] = useState(false);
 
-        const strTime = timeToString(time);
-        const todayReports = reports.filter(
-          (report) => report.reportTime === strTime
-        );
-
-        if (!items[strTime]) {
-          items[strTime] = [];
-          console.log(first);
-
-          // const numItems = Math.floor(Math.random() * 3 + 1);
-          todayReports.forEach((report) => {
-            items[strTime].push({
-              title: report.title,
-              height: Math.max(10, Math.floor(Math.random() * 150)),
-              day: strTime,
-              ...report,
-            });
-          });
-          // for (let j = 0; j < todayReports.length; j++) {
-          //   items[strTime].push({
-          //     name: 'Item for ' + strTime + ' #' + j,
-          //     height: Math.max(10, Math.floor(Math.random() * 150)),
-          //     day: strTime,
-          //   });
-          // }
-        }
-      }
-      const newItems = {};
-      Object.keys(items).forEach((key) => {
-        newItems[key] = items[key];
-      });
-      setItems(newItems);
-    }, 1000);
-  };
-
-  useEffect(() => {
-    const fetchCycleReports = async () => {
-      try {
-        const res = await ReportService.getCycleReports(classId, groupId);
-        console.log(res);
-        if (res.status === 200) {
-          const result = res.data.data;
-          console.log('Cycle', result);
-          setReports(result);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchCycleReports();
-  }, []);
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerBackVisible: false,
-      title: 'Cycle Reports',
-      headerRight: () => (
-        <TouchableOpacity onPress={showAlertModal}>
-          <MaterialCommunityIcons
-            name='delete-empty'
-            color={COLOR.red[2]}
-            size={28}
-          />
-        </TouchableOpacity>
-      ),
+  const handleShowCycleReportDetail = (report) => {
+    navigation.navigate('CycleDetail', {
+      report: report,
     });
-  }, []);
-
-  const showAlertModal = () => {
-    Alert.alert('Delete class', 'This action cannot revers', [
-      {
-        text: 'Cancel',
-        onPress: () => console.log('Cancel Pressed'),
-        style: 'cancel',
-      },
-      { text: 'Confirm', onPress: () => handleDeleteGroup() },
-    ]);
   };
-  const handleDeleteGroup = async () => {
+
+  const handleDeleteClass = async () => {
     try {
-      const res = await GroupService.deleteGroup(classId, groupId);
+      const res = await ClassService.deleteClass(route.params.classId);
       if (res.status === 200) {
         if (res.data.code === 200) {
           navigation.goBack();
@@ -131,143 +57,160 @@ const CycleReports = ({ navigation, route }) => {
     }
   };
 
-  const CardTitle = ({ item }) => (
-    <View className='w-full flex-row items-center justify-between mt-3 pr-3'>
-      <Text style={styles.cardTitle}>{item.title}</Text>
-      <Entypo name='cycle' size={20} color={COLOR.gray[1]} />
-    </View>
-  );
-
-  const renderItem = (item) => {
-    console.warn('Content: ', item);
-    return (
-      <TouchableOpacity
-        onPress={() =>
-          navigation.navigate('ReportDetail', {
-            reportId: item.id,
-            classId: classId,
-            groupId: groupId,
-          })
+  const handleRefreshList = async () => {
+    setRefresh(true);
+    try {
+      const res = await ReportService.getCycleReports(classId, groupId);
+      if (res.status === 200) {
+        if (res.data.code === 200) {
+          setTimeout(() => {
+            setCycleReports(res.data.data);
+            setRefresh(false);
+          }, 2000);
         }
-        style={styles.item}
-      >
-        <Card elevation={3} style={styles.card} contentStyle={{ padding: 0 }}>
-          <Card.Title title={<CardTitle item={item} />} />
-          <Card.Content
-            style={{
-              flexDirection: 'column',
-              borderTopWidth: 2,
-              borderTopColor: COLOR.gray[3],
-              paddingTop: 8,
-            }}
-          >
-            <View className='mb-4'>
-              <Text className='text-gray-700 text-base'>{item.content}</Text>
-            </View>
-            <View>
-              <Text className='text-gray-600 text-sm'>{item.groupId}</Text>
-            </View>
-          </Card.Content>
-        </Card>
-      </TouchableOpacity>
-    );
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerBackTitle: 'Back',
+      headerBackTitleVisible: false,
+      headerRight: () => (
+        <TouchableOpacity onPress={showAlertModal}>
+          <MaterialCommunityIcons
+            name='delete-empty'
+            color={COLOR.red[2]}
+            size={28}
+          />
+        </TouchableOpacity>
+      ),
+    });
+  }, []);
+
+  useEffect(() => {
+    const fetchCycleReports = async () => {
+      try {
+        const res = await ReportService.getCycleReports(classId, groupId);
+        if (res.status === 200) {
+          if (res.data.code === 200) {
+            setCycleReports(res.data.data);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchCycleReports();
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <View
-        style={{
-          width: '100%',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-        }}
+    <SafeAreaView className='bg-white flex-1 relative'>
+      <Overlay
+        isVisible={toggleModal}
+        onBackdropPress={() => setToggleModal(false)}
       >
         <View
-          style={styles.toggleBtn}
-          className={`w-1/2 items-center  ${
-            value ? 'bg-blue_2 text-white' : 'bg-white text-primary_text'
-          }`}
+          className='flex-row items-center py-1 gap-2'
+          style={{ width: 200 }}
         >
-          <Pressable
-            onPress={() =>
-              navigation.goBack({
-                classId: classId,
-                groupId: groupId,
-              })
-            }
-          >
-            <Text
-              style={{
-                fontWeight: '600',
-                color: value ? '#fff' : COLOR.primary03,
-              }}
-            >
-              Daily Reports
-            </Text>
-          </Pressable>
+          <Ionicons name='search' color={'#333'} size={18} />
+          <TextInput
+            placeholder='useless placeholder'
+            className='flex-1 text-black'
+            onChangeText={setSearchValue}
+            value={searchValue}
+          />
         </View>
-        <View
-          style={styles.toggleBtn}
-          className={`w-1/2 items-center  ${
-            !value ? 'bg-blue_2 text-white' : 'bg-white text-primary_text'
-          }`}
-        >
-          <Pressable>
-            <Text
-              style={{
-                fontWeight: '600',
-                color: !value ? '#fff' : COLOR.primary03,
-              }}
-            >
-              Cycle Reports
-            </Text>
-          </Pressable>
-        </View>
+      </Overlay>
+
+      <View className='flex-1 mt-3 bg-white'>
+        {reports.length > 0 && (
+          <FlatList
+            refreshing={refresh}
+            onRefresh={handleRefreshList}
+            data={reports.sort((a, b) => a.number > b.number)}
+            className='mx-2 px-2 z-10'
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                onPress={handleShowCycleReportDetail.bind(null, item)}
+              >
+                <CycleItem report={item} />
+              </TouchableOpacity>
+            )}
+            showsVerticalScrollIndicator={false}
+            ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
+            keyExtractor={(item) => item.id}
+          />
+        )}
       </View>
-      {reports && (
-        <Agenda
-          items={items}
-          loadItemsForMonth={loadItems}
-          selected={'2022-02-21'}
-          refreshControl={null}
-          showClosingKnob={true}
-          refreshing={false}
-          renderItem={renderItem}
-        />
-      )}
-      <StatusBar />
-    </View>
+
+      <TouchableHighlight
+        underlayColor='#99B3FB'
+        className='absolute bottom-3 right-2  z-40 bg-blue_1 rounded-full p-3'
+        onPressOut={() => setShowMenuActions(false)}
+      >
+        <Entypo name='dots-three-vertical' color={'#fff'} size={24} />
+      </TouchableHighlight>
+      <TouchableOpacity
+        style={{
+          transform: [
+            {
+              translateY: showMenuActions ? -58 : 0,
+            },
+          ],
+        }}
+        onPress={() => setToggleModal(true)}
+        className={`absolute bottom-3 right-2 z-30 bg-blue_1 rounded-full p-2`}
+      >
+        <Ionicons name='search' color={'#fff'} size={30} />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{
+          transform: [
+            {
+              translateY: showMenuActions ? -58 : 0,
+            },
+            {
+              translateX: showMenuActions ? -58 : 0,
+            },
+          ],
+        }}
+        onPress={() =>
+          navigation.navigate('StudentList', {
+            classId: route.params.classId,
+          })
+        }
+        className={`absolute bottom-3 right-2 z-30 bg-blue_1 rounded-full p-2`}
+      >
+        <Ionicons name='ios-people-sharp' color={'#fff'} size={30} />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{
+          transform: [
+            {
+              translateX: showMenuActions ? -58 : 0,
+            },
+          ],
+        }}
+        onPress={() =>
+          navigation.navigate('AddGroup', {
+            classId: route.params.classId,
+          })
+        }
+        className={`absolute bottom-3 right-2  z-30`}
+      >
+        <AntDesign name='pluscircle' color={'#7799FA'} size={48} />
+      </TouchableOpacity>
+
+      <StatusBar type='auto' />
+    </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  card: {
-    backgroundColor: '#fff',
-    paddingTop: 8,
-  },
-  item: {
-    flex: 1,
-    borderRadius: 5,
-    padding: 10,
-    marginRight: 10,
-    marginTop: 12,
-  },
-  cardTitle: {
-    fontWeight: '600',
-    fontSize: 18,
-    borderBottomWidth: 1,
-    borderBottomColor: COLOR.gray[2],
-    color: COLOR.blue[1],
-    marginRight: 20,
-  },
-  toggleBtn: {
-    paddingVertical: 12,
-    borderWidth: 1,
-    borderColor: COLOR.gray[3],
-  },
-});
-
 export default CycleReports;
+
+const styles = StyleSheet.create({});

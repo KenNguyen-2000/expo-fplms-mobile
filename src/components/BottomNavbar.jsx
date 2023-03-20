@@ -8,7 +8,6 @@ import {
   GroupListScreen,
   HomeScreen,
   ProfileScreen,
-  ReportDetail,
 } from '../views';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabBarItem from './TabBarItem';
@@ -26,8 +25,6 @@ function ClassStackScreen() {
       <ClassStack.Screen name='ClassList' component={ClassListScreen} />
       <ClassStack.Screen name='StudentList' component={StudentListScreen} />
       <ClassStack.Screen name='GroupList' component={GroupListScreen} />
-      <ClassStack.Screen name='DailyReports' component={DailyReports} />
-      <ClassStack.Screen name='ReportDetail' component={ReportDetail} />
     </ClassStack.Navigator>
   );
 }

@@ -79,7 +79,7 @@ const ProfileScreen = ({ navigation }) => {
       <View style={styles.circle2}></View>
       <View style={styles.circle3}></View>
       <View style={styles.circle1}></View>
-      <View className='px-5 mt-20 '>
+      <View className='px-6 mt-20 '>
         <Surface elevation={3} style={styles.wrapper} className='shadow-md'>
           <View className='flex-col gap-1 items-center -mt-16 mb-7'>
             {userInfo ? (
@@ -93,7 +93,7 @@ const ProfileScreen = ({ navigation }) => {
             <Text className='font-bold text-xl text-primary_text'>
               {userInfo ? userInfo.name : 'Pham Trong Thanh'}
             </Text>
-            <Text className='text-gray-500'>SE160037</Text>
+            <Text className='text-gray-500'>SE160026</Text>
           </View>
           <View className='flex-row w-full items-center px-8'>
             <FontAwesome

@@ -1,17 +1,30 @@
+import { LogBox } from 'react-native';
+
+LogBox.ignoreLogs([
+  "ViewPropTypes has been removed from React Native. Migrate to ViewPropTypes exported from 'deprecated-react-native-prop-types'",
+  'ColorPropType will be removed',
+]);
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import BottomNavbar from './src/components/BottomNavbar';
-import { AddClassScreen, AddGroupScreen, LoginScreen } from './src/views';
+import {
+  AddClassScreen,
+  AddGroupScreen,
+  LoginScreen,
+  ReportDetail,
+} from './src/views';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { DailyReports } from './src/views/index';
 import CycleReports from './src/views/CycleReports/CycleReports';
+import CycleDetail from './src/views/CycleDetail/CycleDetail';
 
 const Stack = createNativeStackNavigator();
-const Tab = createMaterialTopTabNavigator();
+const TopTab = createMaterialTopTabNavigator();
 
 export default function App() {
   const [isSignedIn, setIsSignedIn] = useState(undefined);
@@ -30,12 +43,26 @@ export default function App() {
   }, []);
 
   const HeadTab = (props) => {
-    console.log(props);
+    const { classId, groupId } = props.route.params;
     return (
-      <Tab.Navigator>
-        <Tab.Screen name='DailyReports' component={DailyReports} />
-        <Tab.Screen name='CycleReports' component={CycleReports} />
-      </Tab.Navigator>
+      <TopTab.Navigator>
+        <TopTab.Screen
+          name='DailyReports'
+          component={DailyReports}
+          initialParams={{
+            groupId: groupId,
+            classId: classId,
+          }}
+        />
+        <TopTab.Screen
+          name='CycleReports'
+          component={CycleReports}
+          initialParams={{
+            groupId: groupId,
+            classId: classId,
+          }}
+        />
+      </TopTab.Navigator>
     );
   };
 
@@ -65,8 +92,11 @@ export default function App() {
             component={AddGroupScreen}
             options={{ tabBarVisible: false }}
           />
-          <Stack.Screen name='DailyReports' component={DailyReports} />
-          <Stack.Screen name='CycleReports' component={CycleReports} />
+          <Stack.Screen name='Reports' component={HeadTab} />
+          <Stack.Screen name='CycleDetail' component={CycleDetail} />
+          <Stack.Screen name='ProgressDetail' component={ReportDetail} />
+          {/* <Stack.Screen name='DailyReports' component={DailyReports} />
+          <Stack.Screen name='CycleReports' component={CycleReports} /> */}
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>

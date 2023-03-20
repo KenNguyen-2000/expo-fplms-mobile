@@ -37,7 +37,7 @@ const GroupListScreen = ({ navigation, route }) => {
   };
 
   const handleShowGroupDetail = (groudId) => {
-    navigation.navigate('DailyReports', {
+    navigation.navigate('Reports', {
       groupId: groudId,
       classId: route.params.classId,
     });
@@ -80,7 +80,7 @@ const GroupListScreen = ({ navigation, route }) => {
         }, 2000);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -108,7 +108,7 @@ const GroupListScreen = ({ navigation, route }) => {
           setGroups(res.data.data);
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
     fetchGroups();

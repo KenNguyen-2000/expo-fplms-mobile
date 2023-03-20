@@ -90,22 +90,7 @@ const DailyReports = ({ navigation, route }) => {
               };
             })
           );
-          console.log('Progress', result[0]);
           setReports(result);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    const fetchCycleReports = async () => {
-      try {
-        const res = await ReportService.getCycleReports(classId, groupId);
-        if (res.status === 200) {
-          const accessToken = await AsyncStorage.getItem('@accessToken');
-          const result = res.data.data;
-          console.log('Cycle', result[0]);
-          setReports(res.data.data);
         }
       } catch (error) {
         console.log(error);
@@ -123,17 +108,8 @@ const DailyReports = ({ navigation, route }) => {
       }
     };
 
-    if (value) {
-      fetchProgressReports();
-    } else {
-      fetchCycleReports();
-    }
-  }, [value]);
-
-  const handleChangeFilter = (value) => {
-    setReports(undefined);
-    setValue(value);
-  };
+    fetchProgressReports();
+  }, []);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -187,10 +163,8 @@ const DailyReports = ({ navigation, route }) => {
     return (
       <TouchableOpacity
         onPress={() =>
-          navigation.navigate('ReportDetail', {
-            reportId: item.id,
-            classId: classId,
-            groupId: groupId,
+          navigation.navigate('ProgressDetail', {
+            report: item,
           })
         }
         style={styles.item}
@@ -205,9 +179,9 @@ const DailyReports = ({ navigation, route }) => {
               paddingTop: 8,
             }}
           >
-            <View className='mb-4'>
+            {/* <View className='mb-4'>
               <Text className='text-gray-700 text-base'>{item.content}</Text>
-            </View>
+            </View> */}
             <View>
               <Text className='text-gray-600 text-sm'>{item.student.name}</Text>
             </View>
@@ -223,7 +197,7 @@ const DailyReports = ({ navigation, route }) => {
         <Agenda
           items={items}
           loadItemsForMonth={loadItems}
-          selected={'2022-02-21'}
+          selected={today.toISOString().split('T')[0]}
           refreshControl={null}
           showClosingKnob={true}
           refreshing={false}
