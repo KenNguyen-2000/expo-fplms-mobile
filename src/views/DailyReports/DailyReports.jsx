@@ -16,8 +16,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import StudentService from '../../api/studentService';
 import { COLOR } from '../../utils/color';
 import Entypo from 'react-native-vector-icons/Entypo';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { GroupService } from '../../api/groupService';
 
 const timeToString = (time) => {
   const date = new Date(time);
@@ -34,18 +32,17 @@ const DailyReports = ({ navigation, route }) => {
 
   const loadItems = (day) => {
     setTimeout(() => {
-      for (let i = -15; i < 85; i++) {
+      for (let i = -30; i < 14; i++) {
         const time = day.timestamp + i * 24 * 60 * 60 * 1000;
 
         const strTime = timeToString(time);
-        const todayReports = reports.filter(
-          (report) => report.reportTime === strTime
-        );
+        const todayReports = reports.filter((report) => {
+          return report.reportTime === strTime;
+        });
 
         if (!items[strTime]) {
           items[strTime] = [];
 
-          // const numItems = Math.floor(Math.random() * 3 + 1);
           todayReports.forEach((report) => {
             items[strTime].push({
               title: report.title,
@@ -54,13 +51,6 @@ const DailyReports = ({ navigation, route }) => {
               ...report,
             });
           });
-          // for (let j = 0; j < todayReports.length; j++) {
-          //   items[strTime].push({
-          //     name: 'Item for ' + strTime + ' #' + j,
-          //     height: Math.max(10, Math.floor(Math.random() * 150)),
-          //     day: strTime,
-          //   });
-          // }
         }
       }
       const newItems = {};
@@ -113,44 +103,9 @@ const DailyReports = ({ navigation, route }) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerBackTitleVisible: false,
       title: 'Daily Reports',
-      headerRight: () => (
-        <TouchableOpacity onPress={showAlertModal}>
-          <MaterialCommunityIcons
-            name='delete-empty'
-            color={COLOR.red[2]}
-            size={28}
-          />
-        </TouchableOpacity>
-      ),
     });
   }, []);
-
-  const showAlertModal = () => {
-    Alert.alert('Delete class', 'This action cannot revers', [
-      {
-        text: 'Cancel',
-        onPress: () => console.log('Cancel Pressed'),
-        style: 'cancel',
-      },
-      { text: 'Confirm', onPress: () => handleDeleteGroup() },
-    ]);
-  };
-  const handleDeleteGroup = async () => {
-    try {
-      const res = await GroupService.deleteGroup(classId, groupId);
-      if (res.status === 200) {
-        if (res.data.code === 200) {
-          navigation.goBack();
-        } else {
-          throw new Error(res.data);
-        }
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const CardTitle = ({ item }) => (
     <View className='w-full flex-row items-center justify-between mt-3 pr-3'>

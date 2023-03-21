@@ -1,28 +1,16 @@
 import {
-  Alert,
-  Button,
   FlatList,
-  Image,
-  Pressable,
   SafeAreaView,
   StyleSheet,
-  Text,
   TextInput,
-  TouchableHighlight,
   TouchableOpacity,
   View,
 } from 'react-native';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { GroupService } from '../../api/groupService';
-import Entypo from 'react-native-vector-icons/Entypo';
 import { Overlay } from '@rneui/themed';
-import GroupItem from '../../components/GroupItem';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { COLOR } from '../../utils/color';
-import { ClassService } from '../../api/classService';
 import ReportService from '../../api/reportService';
 import CycleItem from '../../components/CycleItem';
 
@@ -31,7 +19,6 @@ const CycleReports = ({ navigation, route }) => {
 
   const [reports, setCycleReports] = useState([]);
 
-  const [showMenuActions, setShowMenuActions] = useState(false);
   const [toggleModal, setToggleModal] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [refresh, setRefresh] = useState(false);
@@ -40,21 +27,6 @@ const CycleReports = ({ navigation, route }) => {
     navigation.navigate('CycleDetail', {
       report: report,
     });
-  };
-
-  const handleDeleteClass = async () => {
-    try {
-      const res = await ClassService.deleteClass(route.params.classId);
-      if (res.status === 200) {
-        if (res.data.code === 200) {
-          navigation.goBack();
-        } else {
-          throw new Error(res.data);
-        }
-      }
-    } catch (error) {
-      console.error(error);
-    }
   };
 
   const handleRefreshList = async () => {
@@ -76,17 +48,7 @@ const CycleReports = ({ navigation, route }) => {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerBackTitle: 'Back',
-      headerBackTitleVisible: false,
-      headerRight: () => (
-        <TouchableOpacity onPress={showAlertModal}>
-          <MaterialCommunityIcons
-            name='delete-empty'
-            color={COLOR.red[2]}
-            size={28}
-          />
-        </TouchableOpacity>
-      ),
+      title: 'Daily Reports',
     });
   }, []);
 
@@ -147,66 +109,6 @@ const CycleReports = ({ navigation, route }) => {
           />
         )}
       </View>
-
-      <TouchableHighlight
-        underlayColor='#99B3FB'
-        className='absolute bottom-3 right-2  z-40 bg-blue_1 rounded-full p-3'
-        onPressOut={() => setShowMenuActions(false)}
-      >
-        <Entypo name='dots-three-vertical' color={'#fff'} size={24} />
-      </TouchableHighlight>
-      <TouchableOpacity
-        style={{
-          transform: [
-            {
-              translateY: showMenuActions ? -58 : 0,
-            },
-          ],
-        }}
-        onPress={() => setToggleModal(true)}
-        className={`absolute bottom-3 right-2 z-30 bg-blue_1 rounded-full p-2`}
-      >
-        <Ionicons name='search' color={'#fff'} size={30} />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={{
-          transform: [
-            {
-              translateY: showMenuActions ? -58 : 0,
-            },
-            {
-              translateX: showMenuActions ? -58 : 0,
-            },
-          ],
-        }}
-        onPress={() =>
-          navigation.navigate('StudentList', {
-            classId: route.params.classId,
-          })
-        }
-        className={`absolute bottom-3 right-2 z-30 bg-blue_1 rounded-full p-2`}
-      >
-        <Ionicons name='ios-people-sharp' color={'#fff'} size={30} />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={{
-          transform: [
-            {
-              translateX: showMenuActions ? -58 : 0,
-            },
-          ],
-        }}
-        onPress={() =>
-          navigation.navigate('AddGroup', {
-            classId: route.params.classId,
-          })
-        }
-        className={`absolute bottom-3 right-2  z-30`}
-      >
-        <AntDesign name='pluscircle' color={'#7799FA'} size={48} />
-      </TouchableOpacity>
-
-      <StatusBar type='auto' />
     </SafeAreaView>
   );
 };

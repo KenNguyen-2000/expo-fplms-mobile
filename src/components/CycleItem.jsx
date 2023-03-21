@@ -20,14 +20,14 @@ const CycleItem = (props) => {
           {report.title}
         </Text>
         <View className='flex-row gap-2 items-center mb-2'>
-          <Text className='text-lg text-gray_0 uppercase'>
-            {report.resourceLink}
+          <Text className='text-lg text-gray_0 uppercase text-medium'>
+            Sprint {report.cycleNumber}
           </Text>
         </View>
         <View className='flex-row  gap-2 items-center'>
           <View className='px-2 bg-green_1 rounded-md'>
             <Text className='text-lg text-white font-medium'>
-              Mark: {report.mark}
+              {report.mark !== null ? `Mark: ` + report.mark : 'Reviewing...'}
             </Text>
           </View>
         </View>

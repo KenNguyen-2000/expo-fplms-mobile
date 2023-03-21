@@ -7,6 +7,8 @@ import {
   StatusBar,
   Platform,
   TouchableOpacity,
+  Button,
+  Pressable,
 } from 'react-native';
 import React, {
   useCallback,
@@ -20,6 +22,11 @@ import { Surface } from 'react-native-paper';
 import { COLOR } from '../../utils/color';
 import RNDraftView from 'react-native-draftjs-editor';
 import getRNDraftJSBlocks from 'react-native-draftjs-render';
+import BottomSheet, {
+  BottomSheetModal,
+  BottomSheetModalProvider,
+  BottomSheetScrollView,
+} from '@gorhom/bottom-sheet';
 
 const ControlButton = ({ text, action, isActive }) => {
   return (
@@ -85,9 +92,12 @@ const styleMap = {
 
 const ReportDetail = ({ navigation, route }) => {
   const { report } = route.params;
-  const blocks = getRNDraftJSBlocks({
-    contentState: JSON.parse(report.content),
-  });
+  let blocks = undefined;
+  if (report.content.includes('{')) {
+    blocks = getRNDraftJSBlocks({
+      contentState: JSON.parse(report.content),
+    });
+  }
 
   const [progressReport, setProgressReport] = useState(report);
   const _draftRef = React.createRef();
@@ -98,7 +108,7 @@ const ReportDetail = ({ navigation, route }) => {
   const bottomSheetModalRef = useRef(null);
 
   // variables
-  const snapPoints = useMemo(() => ['25%', '50%'], []);
+  const snapPoints = useMemo(() => ['25%', '95%'], []);
 
   // callbacks
   const handlePresentModalPress = useCallback(() => {
@@ -124,7 +134,6 @@ const ReportDetail = ({ navigation, route }) => {
   };
 
   useEffect(() => {
-    console.log(editorState);
     /**
      * Get the current editor state in HTML.
      * Usually keep it in the submit or next action to get output after user has typed.
@@ -142,8 +151,8 @@ const ReportDetail = ({ navigation, route }) => {
   }, [report]);
 
   return (
-    <BottomSheetModalProvider>
-      <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <BottomSheetModalProvider>
         {progressReport && (
           <ScrollView style={styles.scrollView}>
             <Surface style={styles.wrapper}>
@@ -187,8 +196,21 @@ const ReportDetail = ({ navigation, route }) => {
                   </Text>
                 </View>
                 <View style={styles.colRight}>
-                  {/* <View>{blocks}</View> */}
-                  <RNDraftView
+                  {blocks ? (
+                    <Pressable
+                      onPress={handlePresentModalPress}
+                      className='px-4 py-1 bg-blue_2 rounded-full'
+                    >
+                      <Text className='text-white font-medium text-base'>
+                        View
+                      </Text>
+                    </Pressable>
+                  ) : (
+                    <View style={styles.colRight}>
+                      <Text style={styles.contentText}>{report.content}</Text>
+                    </View>
+                  )}
+                  {/* <RNDraftView
                     defaultValue={defaultValue}
                     onEditorReady={editorLoaded}
                     style={{ flex: 1, innerHeight: 100 }}
@@ -203,7 +225,7 @@ const ReportDetail = ({ navigation, route }) => {
                     blockType={blockType}
                     // toggleStyle={toggleStyle}
                     // toggleBlockType={toggleBlockType}
-                  />
+                  /> */}
                   {/* <Text style={styles.contentText} className='min-h-[70]'>
                   {progressReport.content}
                 </Text> */}
@@ -234,25 +256,22 @@ const ReportDetail = ({ navigation, route }) => {
 
             {/* {blocks} */}
 
-            <View style={styles.container}>
-              <Button
-                onPress={handlePresentModalPress}
-                title='Present Modal'
-                color='black'
-              />
+            {blocks && (
               <BottomSheetModal
                 ref={bottomSheetModalRef}
                 index={1}
                 snapPoints={snapPoints}
                 onChange={handleSheetChanges}
               >
-                <View style={styles.contentContainer}>{blocks}</View>
+                <ScrollView style={styles.contentContainer}>
+                  {blocks}
+                </ScrollView>
               </BottomSheetModal>
-            </View>
+            )}
           </ScrollView>
         )}
-      </SafeAreaView>
-    </BottomSheetModalProvider>
+      </BottomSheetModalProvider>
+    </SafeAreaView>
   );
 };
 
@@ -261,11 +280,14 @@ export default ReportDetail;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 24,
+    justifyContent: 'center',
     paddingTop: StatusBar.currentHeight,
   },
   scrollView: {
     marginHorizontal: 12,
     marginTop: 24,
+    backgroundColor: '#fff',
   },
   wrapper: {
     backgroundColor: '#fff',
@@ -318,14 +340,9 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
 
-  container: {
-    flex: 1,
-    padding: 24,
-    justifyContent: 'center',
-    backgroundColor: 'grey',
-  },
   contentContainer: {
     flex: 1,
-    alignItems: 'center',
+    backgroundColor: 'white',
+    paddingHorizontal: 20,
   },
 });

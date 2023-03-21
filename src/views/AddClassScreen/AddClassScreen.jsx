@@ -33,11 +33,9 @@ const AddClassScreen = ({ navigation }) => {
   }, []);
 
   const handleCreateClass = async () => {
-    console.log(classData);
     try {
       const res = await ClassService.createNewClass(classData);
       if (res.status === 200) {
-        console.log(res.data);
         navigation.goBack();
       }
     } catch (error) {

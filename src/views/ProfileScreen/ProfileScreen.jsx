@@ -41,7 +41,6 @@ const ProfileScreen = ({ navigation }) => {
 
   const logout = async () => {
     const token = await AsyncStorage.getItem('@accessToken');
-    console.log(token);
     await AuthSession.revokeAsync(
       {
         token: token,
@@ -60,7 +59,6 @@ const ProfileScreen = ({ navigation }) => {
 
       if (jsonValue) {
         const user = JSON.parse(jsonValue);
-        console.log(user);
         setUserInfo(user);
       }
     };

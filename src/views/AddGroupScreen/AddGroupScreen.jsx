@@ -61,7 +61,6 @@ const AddGroupScreen = ({ navigation, route }) => {
         enrollTime: javaDateString,
       });
       if (res.status === 200) {
-        console.log(res.data);
         if (res.data.code === 200) {
           navigation.goBack();
         }

@@ -74,7 +74,6 @@ const ClassListScreen = ({ navigation }) => {
 
   useEffect(() => {
     const fetchClassList = async () => {
-      console.log('Fetching');
       try {
         const res = await ClassService.getClassList();
         if (res.status === 200) {

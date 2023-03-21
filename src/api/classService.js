@@ -7,7 +7,6 @@ const getToken = async () => await AsyncStorage.getItem('@accessToken');
 export class ClassService {
   static async getClassList() {
     const accessToken = await getToken();
-    console.log(Config.API_URL);
     const res = await axios.get(Config.API_URL + '/management/classes', {
       headers: {
         Authorization: `Bearer ${accessToken}`,
